@@ -1,0 +1,10 @@
+grafana:
+  enabled: false
+
+loki:
+  service:
+    type: NodePort
+    nodePort: 32323
+  serviceMonitor:
+    namespace: "monitoring-ns"
+

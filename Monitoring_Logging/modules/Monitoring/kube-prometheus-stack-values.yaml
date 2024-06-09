@@ -1,0 +1,49 @@
+#Edit default value of kube-prometheus-stack chart that is stored in default value section on "https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack"
+
+#Edit Promethus default value
+prometheus:
+  service:
+    type: NodePort
+    nodePort: 32223  
+
+#Edit Grafana default value
+grafana:
+  adminUser: "admin"
+  adminPassword: "qwerty"
+  #Expose grfana as nodeport
+  service:
+    name: service
+    type: NodePort
+    port: 80
+    targetPort: 3000
+    nodePort: 30003
+
+  # To make Grafana persistent (Using Statefulset)
+  persistence:
+    enabled: true
+    type: sts 
+    storageClassName: "grafana-storage-class"
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+    finalizers:
+      - kubernetes.io/pvc-protection
+
+  #Add Additional data-source LOKI (promethus is alredy attach beacuse we use "kube-prometheus-stack" helm chart that automatically attach)
+  datasources: 
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Loki
+      type: loki
+      url: http://loki:3100
+      access: proxy
+     
+  
+  # sidecar:
+  #   #Add Loki data source
+  #   datasources:
+  #     enabled: true
+  #     name: Loki
+  #     uid: loki
+  #     url: http://loki:3100
